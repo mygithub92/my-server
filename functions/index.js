@@ -1,5 +1,5 @@
 const functions = require('firebase-functions');
-const cors = require('cors')({origin: true});
+// const cors = require('cors')({origin: true});
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -32,7 +32,8 @@ app.get('/api/markets', (req, res) => {
         }).then(data => {
             cachedMarketSummary = data.filter(element => element.IsActive);
             res.status(200).send(cachedMarketSummary);
-        });
+            return null;
+        }).catch(error => console.log(error));
     } else {
         console.log('Using cached data for /api/markets');
         experied = false;
@@ -56,9 +57,12 @@ app.get('/api/market', (req, res) => {
                     cachedMarketDetails[marketName].LogoUrl = found.LogoUrl;
                 }
             }
-            cachedMarketDetails[marketName] = {...cachedMarketDetails[marketName], ...data};
+            // cachedMarketDetails[marketName] = {...cachedMarketDetails[marketName], ...data};
+            cachedMarketDetails[marketName] = data;
             res.status(200).send(cachedMarketDetails[marketName]);
-        });
+            return null;
+        })
+        .catch(error => console.log(error));
     } else {
         console.log('Using cached data for /api/market');
         res.status(200).send(cachedMarketDetails[marketName]);
